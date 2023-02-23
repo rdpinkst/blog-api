@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 
 const indexRouter = require('./routes/index');
