@@ -2,6 +2,7 @@ const Comment = require('../models/comment');
 
 //  Retrieve all comments for a postId
 exports.getCommentsByPostId = (req, res, next) => {
+    
     res.send('Get all comments for a post');
 }
 
