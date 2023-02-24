@@ -1,5 +1,6 @@
-const Post = require("../models/post");
-const { body, validationResult } = require("express-validator");
+const Post = require('../models/post');
+const Comment = require('../models/comment');
+const { body, validationResult } = require('express-validator');
 
 // Retrieve all posts saved in database
 exports.getAllPosts = (req, res, next) => {
@@ -54,11 +55,45 @@ exports.getPostById = (req, res, next) => {
 };
 
 //  Edit post by postId
-exports.editPostById = (req, res, next) => {
-  res.send("Edit post by id");
-};
+exports.editPostById = [
+  body("title").trim().isLength({ min: 1 }).escape(),
+  body("postBody").trim().isLength({ min: 1 }).escape(),
+  body("publish").trim().isLength({ min: 1 }).escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // May send error array to client to display
+      return;
+    }
+
+    const post = new Post({
+      title: req.body.title,
+      postBody: req.body.postBody,
+      publish: req.body.publish,
+      _id: req.params.postid,
+    });
+
+    Post.findByIdAndUpdate(req.params.postid, post, {}, (err, thepost) => {
+      if (err) {
+        return next(err);
+      }
+      return res.status(201).json(thepost);
+    });
+  },
+];
 
 //  Delete post by postId
 exports.deletePostById = (req, res, next) => {
-  res.send("Delete post by id");
+  Post.findByIdAndRemove( req.params.postid, (err) => {
+    if(err) {
+      return next(err);
+    }
+    Comment.remove({ post: req.params.postid}, (err) => {
+      if(err) {
+        return next(err);
+      }
+    })
+    res.json({message: 'Post and comments deleted successfully.'})
+  })
 };
