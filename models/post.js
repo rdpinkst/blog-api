@@ -6,7 +6,7 @@ const PostSchema = new Schema({
     title: { type: String, required: true },
     postBody: { type: String, required: true },
     timeStamp: { type: Date, default: Date.now},
-    publish: { type: Boolean, required: true}
+    publish: { type: String, required: true}
 })
 
 module.exports = mongoose.model("Post", PostSchema);

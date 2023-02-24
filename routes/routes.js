@@ -25,7 +25,7 @@ router.put('posts/:postid', post_controller.editPostById);
 router.delete('posts/:postid', post_controller.deletePostById);
 
 // POST/posts/:postid/comments create new comment
-router.post('/post/:postid/comments', comment_controller.createComment);
+router.post('/posts/:postid/comments', comment_controller.createComment);
 
 // GET/posts/:postid/comments fetch all comments with postid
 router.get('posts/:postid/comments', comment_controller.getCommentsByPostId)
