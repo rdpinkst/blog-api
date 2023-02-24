@@ -3,19 +3,20 @@ const { body, validationResult } = require("express-validator");
 
 //  Retrieve all comments for a postId
 exports.getCommentsByPostId = (req, res, next) => {
+  console.log(req.params.postid);
   Comment.find({ post: req.params.postid })
     .sort({ timeStamp: -1 })
     .exec(function (err, postComments) {
       if (err) {
         return next(err);
       }
+      
       const allComments = [...postComments];
-      res.json(allComments);
+      res.status(200).json(allComments);
     });
 };
 
 //  Create new comment
-
 exports.createComment = [
   body("username").trim().isLength({ min: 1 }).escape(),
   body("comment").trim().isLength({ min: 1 }).escape(),
@@ -34,8 +35,7 @@ exports.createComment = [
         if (err) {
           return next(err);
         }
-        // comment saved to database
-        res.status(200);
+        return res.status(201).json(comment);
       });
     }
   },

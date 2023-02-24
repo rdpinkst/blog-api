@@ -17,9 +17,9 @@ exports.getAllPosts = (req, res, next) => {
 
 // Create a new post
 exports.createPost = [
-  body('title').trim().isLength({ min: 1 }).escape(),
-  body('postBody').trim().isLength({ min: 1 }).escape(),
-  body('publish').trim().isLength({ min: 1 }).escape(),
+  body("title").trim().isLength({ min: 1 }).escape(),
+  body("postBody").trim().isLength({ min: 1 }).escape(),
+  body("publish").trim().isLength({ min: 1 }).escape(),
   (req, res, next) => {
     const errors = validationResult(req);
 
@@ -38,10 +38,7 @@ exports.createPost = [
       if (err) {
         return next(err);
       }
-      // Post saved to database
-      console.log("Saved");
-      res.status(200).json(post);
-      return;
+      return res.status(201).json(post);
     });
   },
 ];
@@ -52,9 +49,8 @@ exports.getPostById = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.json(thePost);
+    res.status(200).json(thePost);
   });
-  res.send("Get a single blog post");
 };
 
 //  Edit post by postId
