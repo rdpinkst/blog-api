@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const user_controller = require('../controllers/userController');
 const post_controller = require('../controllers/postController');
 const comment_controller = require('../controllers/commentController');
 
@@ -8,6 +9,12 @@ const comment_controller = require('../controllers/commentController');
 router.get('/', (req, res, next) => {
     res.send('Router started')
 })
+
+// POST: /user/signup
+router.post('/user/signup', user_controller.userSignup);
+
+// POST: /user/signin
+router.post('user/signin', user_controller.userSignin);
 
 // GET/posts fetch all posts
 router.get('/posts', post_controller.getAllPosts);
