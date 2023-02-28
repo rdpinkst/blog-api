@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
+const jwt = require('jsonwebtoken');
+
 
 // Sign up new user
 exports.userSignup = [
@@ -33,4 +35,17 @@ exports.userSignup = [
 ];
 
 // Sign user in
-exports.userSignin = (req, res, next) => {};
+exports.userSignin = [
+  body('email').trim().isLength({min: 1}). escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      return next(errors);
+    }
+    const payload = {
+      email: req.body.email,
+    }
+  jwt.sign(payload, process.env.TOKEN_SECRETE, { algorithm: 'RS256'}, (err, token) => {
+    res.status(200).json({ token });
+  })
+}];
