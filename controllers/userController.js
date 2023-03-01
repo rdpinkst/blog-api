@@ -1,8 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
-const jwt = require('jsonwebtoken');
-
+const jwt = require("jsonwebtoken");
 
 // Sign up new user
 exports.userSignup = [
@@ -26,9 +25,19 @@ exports.userSignup = [
         if (err) {
           return next(err);
         }
-        res.status(201).json({
-          message: "New user was created.",
-        });
+        const payload = {
+          id: newUser._id,
+        };
+        jwt.sign(
+          payload,
+          process.env.TOKEN_SECRETE,
+          (err, token) => {
+            if(err) {
+              return next(err);
+            }
+            res.status(201).json({ email: newUser.email, token });
+          }
+        );
       });
     });
   },
@@ -36,16 +45,22 @@ exports.userSignup = [
 
 // Sign user in
 exports.userSignin = [
-  body('email').trim().isLength({min: 1}). escape(),
+  body("email").trim().isLength({ min: 1 }).escape(),
   (req, res, next) => {
+    // passport.authenticate("local", (err, user, )),
     const errors = validationResult(req);
-    if(!errors.isEmpty()) {
+    if (!errors.isEmpty()) {
       return next(errors);
     }
     const payload = {
-      email: req.body.email,
-    }
-  jwt.sign(payload, process.env.TOKEN_SECRETE, { algorithm: 'RS256'}, (err, token) => {
-    res.status(200).json({ token });
-  })
-}];
+      id: req.user._id,
+    };
+    jwt.sign(
+      payload,
+      process.env.TOKEN_SECRETE,
+      (err, token) => {
+        res.status(200).json({email: req.user.email, token });
+      }
+    );
+  },
+];

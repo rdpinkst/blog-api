@@ -26,7 +26,7 @@ async function main() {
 
 passport.use(
   new LocalStrategy((email, password, done) => {
-    User.findOne({ email: email }, (err, user) => {
+    User.findOne({ email }, (err, user) => {
       if (err) {
         done(err);
       }

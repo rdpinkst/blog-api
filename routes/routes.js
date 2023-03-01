@@ -16,8 +16,8 @@ router.post("/user/signup", user_controller.userSignup);
 
 // POST: /user/signin
 router.post(
-  "user/signin",
-  passport.authenticate("local", { failureMessage: true }),
+  "/user/signin",
+  // passport.authenticate("local", { failureMessage: true }),
   user_controller.userSignin
 );
 
