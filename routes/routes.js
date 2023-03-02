@@ -21,7 +21,11 @@ router.post("/user/signin", user_controller.userSignin);
 router.get("/posts", post_controller.getAllPosts);
 
 // POST/posts create post
-router.post("/posts", post_controller.createPost);
+router.post(
+  "/posts",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.createPost
+);
 
 // GET/posts/:postid fetch post with postid
 router.get("/posts/:postid", post_controller.getPostById);

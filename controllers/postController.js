@@ -30,6 +30,7 @@ exports.createPost = [
     }
 
     const post = new Post({
+      user: req.user._id,
       title: req.body.title,
       postBody: req.body.postBody,
       publish: req.body.publish,
