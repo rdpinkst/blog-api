@@ -28,16 +28,12 @@ exports.userSignup = [
         const payload = {
           id: newUser._id,
         };
-        jwt.sign(
-          payload,
-          process.env.TOKEN_SECRETE,
-          (err, token) => {
-            if(err) {
-              return next(err);
-            }
-            res.status(201).json({ email: newUser.email, token });
+        jwt.sign(payload, process.env.TOKEN_SECRETE, (err, token) => {
+          if (err) {
+            return next(err);
           }
-        );
+          res.status(201).json({ email: newUser.email, token });
+        });
       });
     });
   },
@@ -46,21 +42,34 @@ exports.userSignup = [
 // Sign user in
 exports.userSignin = [
   body("email").trim().isLength({ min: 1 }).escape(),
+  body("password").trim().isLength({ min: 1 }).escape(),
   (req, res, next) => {
-    // passport.authenticate("local", (err, user, )),
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return next(errors);
     }
-    const payload = {
-      id: req.user._id,
-    };
-    jwt.sign(
-      payload,
-      process.env.TOKEN_SECRETE,
-      (err, token) => {
-        res.status(200).json({email: req.user.email, token });
+    User.findOne({ email: req.body.email }, (err, user) => {
+      if (err) {
+        return next(err);
       }
-    );
+      if (!user) {
+        return res.json({ message: "Email not found in database" });
+      }
+      bcrypt.compare(req.body.password, user.password, (err, response) => {
+        if (err) {
+          return next(err);
+        }
+        if (response) {
+          const payload = {
+            sub: user._id,
+          };
+          jwt.sign(payload, process.env.TOKEN_SECRETE, (err, token) => {
+            return res.status(200).json({ email: user.email, token });
+          });
+        } else {
+          return res.json({ message: "Incorrect password" });
+        }
+      });
+    });
   },
 ];

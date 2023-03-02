@@ -15,11 +15,7 @@ router.get("/", (req, res, next) => {
 router.post("/user/signup", user_controller.userSignup);
 
 // POST: /user/signin
-router.post(
-  "/user/signin",
-  // passport.authenticate("local", { failureMessage: true }),
-  user_controller.userSignin
-);
+router.post("/user/signin", user_controller.userSignin);
 
 // GET/posts fetch all posts
 router.get("/posts", post_controller.getAllPosts);

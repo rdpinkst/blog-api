@@ -24,25 +24,7 @@ async function main() {
   await mongoose.connect(mongoDB);
 }
 
-passport.use(
-  new LocalStrategy((email, password, done) => {
-    User.findOne({ email }, (err, user) => {
-      if (err) {
-        done(err);
-      }
-      if (!email) {
-        return done(null, false, { message: "Incorrect email address" });
-      }
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (res) {
-          return done(null, user);
-        } else {
-          return done(null, false, { message: "Incorrect password." });
-        }
-      });
-    });
-  })
-);
+// Need create passport-jwt strategy
 
 app.use(logger("dev"));
 app.use(express.json());
