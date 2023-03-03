@@ -31,10 +31,18 @@ router.post(
 router.get("/posts/:postid", post_controller.getPostById);
 
 // PUT/posts/:postid edit specific post
-router.put("/posts/:postid", post_controller.editPostById);
+router.put(
+  "/posts/:postid",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.editPostById
+);
 
 // DELETE/posts/:postid delete specific post
-router.delete("/posts/:postid", post_controller.deletePostById);
+router.delete(
+  "/posts/:postid",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.deletePostById
+);
 
 // GET/posts/:postid/comments fetch all comments with postid
 router.get("/posts/:postid/comments", comment_controller.getCommentsByPostId);
