@@ -8,7 +8,8 @@ exports.getAllPosts = (req, res, next) => {
     .sort({ timeStamp: -1 })
     .exec(function (err, listPosts) {
       if (err) {
-        return next(err);
+        res.json({ message: err.message });
+        // return next(err);
       }
 
       const posts = [...listPosts];
@@ -26,6 +27,7 @@ exports.createPost = [
 
     if (!errors.isEmpty()) {
       // May send error array to client to display
+      res.json({ error: errors.array });
       return;
     }
 
@@ -49,7 +51,8 @@ exports.createPost = [
 exports.getPostById = (req, res, next) => {
   Post.findById(req.params.postid).exec(function (err, thePost) {
     if (err) {
-      return next(err);
+      res.json({ message: err.message });
+      return;
     }
     res.status(200).json(thePost);
   });
@@ -65,6 +68,7 @@ exports.editPostById = [
 
     if (!errors.isEmpty()) {
       // May send error array to client to display
+      res.json({ error: errors.array });
       return;
     }
 
@@ -77,7 +81,8 @@ exports.editPostById = [
 
     Post.findByIdAndUpdate(req.params.postid, post, {}, (err, thepost) => {
       if (err) {
-        return next(err);
+        res.json({ message: err.message });
+        return;
       }
       return res.status(201).json(thepost);
     });
@@ -88,11 +93,13 @@ exports.editPostById = [
 exports.deletePostById = (req, res, next) => {
   Post.findByIdAndRemove( req.params.postid, (err) => {
     if(err) {
-      return next(err);
+      res.json({ message: err.message })
+      return;
     }
     Comment.remove({ post: req.params.postid}, (err) => {
       if(err) {
-        return next(err);
+        res.json({ message: err.message });
+        return;
       }
     })
     res.json({message: 'Post and comments deleted successfully.'})

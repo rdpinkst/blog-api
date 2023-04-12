@@ -11,11 +11,13 @@ exports.userSignup = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // Maybe send json object of error
-      return next(errors);
+      res.json({ error: errors.array });
+      return;
     }
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       if (err) {
-        return next(err);
+        res.json({ message: err.message })
+        return;
       }
       const newUser = new User({
         email: req.body.email,
@@ -23,14 +25,16 @@ exports.userSignup = [
       });
       newUser.save((err) => {
         if (err) {
-          return next(err);
+          res.json({ message: err.message });
+          return;
         }
         const payload = {
           id: newUser._id,
         };
         jwt.sign(payload, process.env.TOKEN_SECRETE, (err, token) => {
           if (err) {
-            return next(err);
+            res.json({ message: err.message });
+            return;
           }
           res.status(201).json({ email: newUser.email, token });
         });
@@ -46,18 +50,21 @@ exports.userSignin = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(errors);
+      res.json({ error: errors.array });
+      return;
     }
     User.findOne({ email: req.body.email }, (err, user) => {
       if (err) {
-        return next(err);
+        res.json({ message: err.message });
+        return;
       }
       if (!user) {
         return res.json({ message: "Email not found in database" });
       }
       bcrypt.compare(req.body.password, user.password, (err, response) => {
         if (err) {
-          return next(err);
+          res.json({ message: err.message });
+          return;
         }
         if (response) {
           const payload = {

@@ -8,7 +8,9 @@ exports.getCommentsByPostId = (req, res, next) => {
     .sort({ timeStamp: -1 })
     .exec(function (err, postComments) {
       if (err) {
-        return next(err);
+        // Send err message
+        res.json({ message: err.message });
+        // return next(err);
       }
       
       const allComments = [...postComments];
@@ -24,7 +26,8 @@ exports.createComment = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // May send errors through json
-      return;
+      res.json({ error: errors.array})
+      // return;
     } else {
       const comment = new Comment({
         username: req.body.username,
