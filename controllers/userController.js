@@ -10,7 +10,6 @@ exports.userSignup = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // Maybe send json object of error
       res.json({ error: errors.array });
       return;
     }
@@ -31,7 +30,7 @@ exports.userSignup = [
         const payload = {
           id: newUser._id,
         };
-        jwt.sign(payload, process.env.TOKEN_SECRETE, (err, token) => {
+        jwt.sign(payload, process.env.TOKEN_SECRETE, {expiresIn: '7d'}, (err, token) => {
           if (err) {
             res.json({ message: err.message });
             return;
