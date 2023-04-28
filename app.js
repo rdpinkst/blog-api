@@ -8,6 +8,9 @@ const User = require("./models/user");
 const bcrypt = require("bcryptjs");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
+const compression = require("compression");
+const helmet = require("helmet");
+const RateLimit = require("express-rate-limit");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -47,11 +50,19 @@ passport.use(
   })
 );
 
+const limit = RateLimit({
+  windowMs: 1*60*1000,
+  max: 20,
+});
+
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
+app.use(helmet());
+app.use(limit);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);

@@ -35,7 +35,7 @@ exports.userSignup = [
             res.json({ message: err.message });
             return;
           }
-          res.status(201).json({ email: newUser.email, token });
+          res.status(201).json({ id: newUser._id, email: newUser.email, token });
         });
       });
     });
@@ -69,8 +69,11 @@ exports.userSignin = [
           const payload = {
             sub: user._id,
           };
-          jwt.sign(payload, process.env.TOKEN_SECRETE, (err, token) => {
-            return res.status(200).json({ email: user.email, token });
+          jwt.sign(payload, process.env.TOKEN_SECRETE, {expiresIn: '7d'}, (err, token) => {
+            if(err) {
+              res.json({error: err.message});
+            }
+            return res.status(200).json({ id: user._id, email: user.email, token });
           });
         } else {
           return res.json({ message: "Incorrect password" });
