@@ -37,7 +37,7 @@ const options = {
 // Need create passport-jwt strategy
 passport.use(
   new JwtStrategy(options, (jwt_payload, done) => {
-    User.findOne({ id: jwt_payload.sub }, (err, user) => {
+    User.findOne({ _id: jwt_payload.sub }, (err, user) => {
       if (err) {
         return done(err, false);
       }
