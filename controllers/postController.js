@@ -96,7 +96,7 @@ exports.deletePostById = (req, res, next) => {
       res.json({ message: err.message })
       return;
     }
-    Comment.remove({ post: req.params.postid}, (err) => {
+    Comment.deleteMany({ post: req.params.postid}, (err) => {
       if(err) {
         res.json({ message: err.message });
         return;
